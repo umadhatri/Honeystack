@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, JSON, LargeBinary, Date
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, JSON, LargeBinary, Date, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -12,6 +12,7 @@ class Event(Base):
     sensor_type = Column(String(10), nullable=False, index=True)  # 'SSH' or 'HTTP'
     source_ip = Column(String(45), nullable=False, index=True)
     source_port = Column(Integer, nullable=False)
+    processed = Column(Boolean, default=False, nullable=False, index=True)
     
     # SSH specific fields
     ssh_username = Column(String(255), nullable=True)

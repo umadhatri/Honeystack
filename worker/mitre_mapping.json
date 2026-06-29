@@ -1,0 +1,57 @@
+{
+  "rules": [
+    {
+      "id": "T1110.001",
+      "name": "Password Guessing",
+      "sensor_type": "SSH",
+      "condition": "ssh_attempt"
+    },
+    {
+      "id": "T1110.004",
+      "name": "Credential Stuffing",
+      "sensor_type": "SSH",
+      "condition": "credential_classification_match"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials in Files",
+      "sensor_type": "HTTP",
+      "condition": "path_match",
+      "pattern": "(/\\.env|/config\\.php)"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "sensor_type": "SSH",
+      "condition": "commands_executed"
+    },
+    {
+      "id": "T1496",
+      "name": "Resource Hijacking",
+      "sensor_type": "SSH",
+      "condition": "command_match",
+      "pattern": "(minerd|xmrig|stratum|pool\\.supportxmr|nicehash|cpuminer)"
+    },
+    {
+      "id": "T1595.002",
+      "name": "Vulnerability Scanning",
+      "sensor_type": "HTTP",
+      "condition": "attack_type_match",
+      "attack_type": "Scan"
+    },
+    {
+      "id": "T1213",
+      "name": "Data from Information Repositories",
+      "sensor_type": "HTTP",
+      "condition": "path_match",
+      "pattern": "/\\.git/config"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "sensor_type": "HTTP",
+      "condition": "path_match",
+      "pattern": "(/admin|/wp-login\\.php|/phpmyadmin)"
+    }
+  ]
+}

@@ -46,14 +46,14 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 2.5 Implement the HTTP Honeypot Sensor using `aiohttp` to expose fake endpoints (`/admin`, `/wp-login.php`, etc.)
   - [x] 2.6 Implement HTTP attack signature matching (SQLi, XSS, traversal, cmd injection) and tag events accordingly
   - [x] 2.7 Ensure sensors send events to the backend ingest endpoint via Docker network isolation (`ingest` network only)
-- [ ] 3.0 Develop Ingest & Enrichment Pipeline
-  - [ ] 3.1 Build the background enrichment worker (`worker/main.py`) to consume raw events
-  - [ ] 3.2 Implement IP reputation/geolocation lookup using AbuseIPDB (cache-first, rate-limit fallback) and `ip-api.com`
-  - [ ] 3.3 Add Redis caching layer (24-hour TTL) for IP lookup queries
-  - [ ] 3.4 Implement SSH credential classification against a common credential list
-  - [ ] 3.5 Implement campaign detection logic (3+ IPs sharing credential list/UA/commands within 1 hour)
-  - [ ] 3.6 Implement MITRE ATT&CK technique mapping using a static JSON configuration (`worker/mitre_mapping.json`)
-  - [ ] 3.7 Ensure DB worker query safety using `FOR UPDATE SKIP LOCKED`
+- [x] 3.0 Develop Ingest & Enrichment Pipeline
+  - [x] 3.1 Build the background enrichment worker (`worker/main.py`) to consume raw events
+  - [x] 3.2 Implement IP reputation/geolocation lookup using AbuseIPDB (cache-first, rate-limit fallback) and `ip-api.com`
+  - [x] 3.3 Add Redis caching layer (24-hour TTL) for IP lookup queries
+  - [x] 3.4 Implement SSH credential classification against a common credential list
+  - [x] 3.5 Implement campaign detection logic (3+ IPs sharing credential list/UA/commands within 1 hour)
+  - [x] 3.6 Implement MITRE ATT&CK technique mapping using a static JSON configuration (`worker/mitre_mapping.json`)
+  - [x] 3.7 Ensure DB worker query safety using `FOR UPDATE SKIP LOCKED`
 - [ ] 4.0 Build the SOC Dashboard Frontend
   - [ ] 4.1 Scaffold a React Single Page Application (SPA) with a dark theme and configure it for SOC monitors
   - [ ] 4.2 Set up state management and routing (using React/Vite/Next.js as requested or needed)
