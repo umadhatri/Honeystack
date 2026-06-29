@@ -30,14 +30,14 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ## Tasks
 
-- [ ] 0.0 Create feature branch
-  - [ ] 0.1 Create and checkout a new branch for this feature (e.g., `git checkout -b feature/honeypot-intelligence-platform`)
-- [ ] 1.0 Setup Infrastructure and Database Migration
-  - [ ] 1.1 Create `docker-compose.yml` defining services: `db` (PostgreSQL), `cache` (Redis)
-  - [ ] 1.2 Create `.env.example` and set up database/cache connection strings
-  - [ ] 1.3 Initialize Alembic in the repository for database migrations
-  - [ ] 1.4 Design and implement the SQL models in `db/models.py` (events, ip_profiles, credentials, campaigns, mitre_tags, reports)
-  - [ ] 1.5 Create and execute the initial Alembic migration to build the database schema
+- [x] 0.0 Create feature branch
+  - [x] 0.1 Create and checkout a new branch for this feature (e.g., `git checkout -b feature/honeypot-intelligence-platform`)
+- [x] 1.0 Setup Infrastructure and Database Migration
+  - [x] 1.1 Create `docker-compose.yml` defining services: `db` (PostgreSQL), `cache` (Redis)
+  - [x] 1.2 Create `.env.example` and set up database/cache connection strings
+  - [x] 1.3 Initialize Alembic in the repository for database migrations
+  - [x] 1.4 Design and implement the SQL models in `db/models.py` (events, ip_profiles, credentials, campaigns, mitre_tags, reports)
+  - [x] 1.5 Create and execute the initial Alembic migration to build the database schema
 - [ ] 2.0 Implement Core Sensors and Backend Ingest API
   - [ ] 2.1 Set up the FastAPI backend (`api/main.py`) with ingest endpoint (`POST /api/v1/events`)
   - [ ] 2.2 Implement rate limiting (1000 events/min) on the ingest endpoint
