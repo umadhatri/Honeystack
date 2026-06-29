@@ -107,6 +107,7 @@ services:
       - NET_BIND_SERVICE
     networks:
       - ingest-net
+      - sensor-net
     depends_on:
       - api
     restart: unless-stopped
@@ -122,6 +123,7 @@ services:
       - "${HTTP_PORT:-8081}:8080"
     networks:
       - ingest-net
+      - sensor-net
     depends_on:
       - api
     restart: unless-stopped
@@ -149,4 +151,6 @@ networks:
   backend-net:
     driver: bridge
   frontend-net:
+    driver: bridge
+  sensor-net:
     driver: bridge
