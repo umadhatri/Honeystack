@@ -38,14 +38,14 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 1.3 Initialize Alembic in the repository for database migrations
   - [x] 1.4 Design and implement the SQL models in `db/models.py` (events, ip_profiles, credentials, campaigns, mitre_tags, reports)
   - [x] 1.5 Create and execute the initial Alembic migration to build the database schema
-- [ ] 2.0 Implement Core Sensors and Backend Ingest API
-  - [ ] 2.1 Set up the FastAPI backend (`api/main.py`) with ingest endpoint (`POST /api/v1/events`)
-  - [ ] 2.2 Implement rate limiting (1000 events/min) on the ingest endpoint
-  - [ ] 2.3 Implement the SSH Honeypot Sensor using `asyncssh` to capture connection metadata (IP, port, user/pass, client fingerprint)
-  - [ ] 2.4 Add SSH interactive shell simulation (fake CLI logging command input, fake login percentage)
-  - [ ] 2.5 Implement the HTTP Honeypot Sensor using `aiohttp` to expose fake endpoints (`/admin`, `/wp-login.php`, etc.)
-  - [ ] 2.6 Implement HTTP attack signature matching (SQLi, XSS, traversal, cmd injection) and tag events accordingly
-  - [ ] 2.7 Ensure sensors send events to the backend ingest endpoint via Docker network isolation (`ingest` network only)
+- [x] 2.0 Implement Core Sensors and Backend Ingest API
+  - [x] 2.1 Set up the FastAPI backend (`api/main.py`) with ingest endpoint (`POST /api/v1/events`)
+  - [x] 2.2 Implement rate limiting (1000 events/min) on the ingest endpoint
+  - [x] 2.3 Implement the SSH Honeypot Sensor using `asyncssh` to capture connection metadata (IP, port, user/pass, client fingerprint)
+  - [x] 2.4 Add SSH interactive shell simulation (fake CLI logging command input, fake login percentage)
+  - [x] 2.5 Implement the HTTP Honeypot Sensor using `aiohttp` to expose fake endpoints (`/admin`, `/wp-login.php`, etc.)
+  - [x] 2.6 Implement HTTP attack signature matching (SQLi, XSS, traversal, cmd injection) and tag events accordingly
+  - [x] 2.7 Ensure sensors send events to the backend ingest endpoint via Docker network isolation (`ingest` network only)
 - [ ] 3.0 Develop Ingest & Enrichment Pipeline
   - [ ] 3.1 Build the background enrichment worker (`worker/main.py`) to consume raw events
   - [ ] 3.2 Implement IP reputation/geolocation lookup using AbuseIPDB (cache-first, rate-limit fallback) and `ip-api.com`

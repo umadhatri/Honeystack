@@ -1,0 +1,31 @@
+# Environment variables
+.env
+.env.*
+
+# Virtual environment
+venv/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Terraform
+*.tfstate
+*.tfstate.*
+
+# Docker
+*/__pycache__
+*/.pytest_cache/
+.pytest_cache/
+
+# Deployment
+dist/
+build/
+
+# Logs
+logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
