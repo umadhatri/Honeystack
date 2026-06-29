@@ -71,6 +71,30 @@ function App() {
   const [ipDetail, setIpDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+
+  const handleGenerateReport = async () => {
+    setIsGeneratingReport(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/reports/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Trigger download of this generated PDF report
+        window.open(`${API_BASE}/api/v1/reports/${data.report_id}/download`, '_blank');
+      } else {
+        alert("Failed to generate report. Make sure database contains events.");
+      }
+    } catch (err) {
+      console.error("Report trigger error:", err);
+      alert("Error triggering report: " + err.message);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
 
   // Map & chart refs
   const mapContainerRef = useRef(null);
@@ -340,6 +364,17 @@ function App() {
           >
             <RefreshCw size={14} className={isRefreshing ? "spin-animation" : ""} />
             {isRefreshing ? 'Loading' : 'Refresh'}
+          </button>
+
+          {/* Generate Report Button */}
+          <button 
+            onClick={handleGenerateReport} 
+            className="filter-select" 
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid rgba(0, 242, 254, 0.4)', color: 'var(--accent-cyan)' }}
+            disabled={isGeneratingReport}
+          >
+            <ShieldAlert size={14} className={isGeneratingReport ? "spin-animation" : ""} />
+            {isGeneratingReport ? 'Generating...' : 'Generate Report'}
           </button>
 
           {/* Real-time pulse indicator */}

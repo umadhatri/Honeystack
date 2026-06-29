@@ -62,12 +62,12 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 4.5 Build Top Credentials, Top Attacking IPs, MITRE ATT&CK Heatmap, Campaign Tracker, and Sensor Health panels
   - [x] 4.6 Implement global filtering (time range, sensor type, country)
   - [x] 4.7 Implement the IP detail drawer showing full enrichment, events, timeline, and observed MITRE techniques
-- [ ] 5.0 Implement Reporting & Automated Scheduler
-  - [ ] 5.1 Create `scheduler/main.py` to trigger weekly report generation every Monday at 00:00 UTC
-  - [ ] 5.2 Implement report compilation (event counts, IPs, campaigns, etc. and week-over-week comparisons)
-  - [ ] 5.3 Implement LLM-assisted summary generation if OpenAI/Anthropic keys are configured, fallback to Jinja2 templates if not
-  - [ ] 5.4 Export reports to PDF format and store them in PostgreSQL (accessible/downloadable from dashboard)
-  - [ ] 5.5 Add manual report trigger button on the dashboard
+- [x] 5.0 Implement Reporting & Automated Scheduler
+  - [x] 5.1 Create `scheduler/main.py` to trigger weekly report generation every Monday at 00:00 UTC
+  - [x] 5.2 Implement report compilation (event counts, IPs, campaigns, etc. and week-over-week comparisons)
+  - [x] 5.3 Implement LLM-assisted summary generation if OpenAI/Anthropic keys are configured, fallback to Jinja2 templates if not
+  - [x] 5.4 Export reports to PDF format and store them in PostgreSQL (accessible/downloadable from dashboard)
+  - [x] 5.5 Add manual report trigger button on the dashboard
 - [ ] 6.0 Configure Cloud Infrastructure and Hardening
   - [ ] 6.1 Set up Terraform config for Azure (VM, networking, NSGs, DNS)
   - [ ] 6.2 Apply security hardening: isolate sensor containers from internal DB networks, drop capabilities for the SSH sensor

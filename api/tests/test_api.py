@@ -1,5 +1,6 @@
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
+from datetime import date
 from fastapi.testclient import TestClient
 from main import app, get_db
 
@@ -202,4 +203,77 @@ async def test_sensors():
 
     app.dependency_overrides.clear()
 
+
+@pytest.mark.asyncio
+@patch("main.compile_report_data", new_callable=AsyncMock)
+@patch("main.generate_summary", new_callable=AsyncMock)
+@patch("main.build_pdf_report")
+async def test_generate_report_endpoint(mock_build_pdf, mock_gen_summary, mock_compile):
+    mock_db = AsyncMock()
+    mock_compile.return_value = {
+        "total_events": 100,
+        "prev_events": 80,
+        "change_events": 25.0,
+        "unique_ips": 10,
+        "prev_ips": 8,
+        "change_ips": 25.0,
+        "ssh_events": 60,
+        "http_events": 40,
+        "top_credentials": [],
+        "top_countries": [],
+        "detected_campaigns": [],
+        "mitre_techniques": []
+    }
+    mock_gen_summary.return_value = "Mock executive summary"
+    mock_build_pdf.return_value = b"%PDF-1.4 mock content"
+    
+    mock_result = MagicMock()
+    mock_result.scalar_one.return_value = 123
+    mock_db.execute.return_value = mock_result
+    
+    app.dependency_overrides[get_db] = lambda: mock_db
+    
+    response = client.post("/api/v1/reports/generate", json={})
+    assert response.status_code == 201
+    assert response.json()["report_id"] == 123
+    
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_list_reports():
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.mappings.return_value.all.return_value = [
+        {"id": 123, "start_date": date(2026, 6, 22), "end_date": date(2026, 6, 29), "total_events": 100, "unique_ips": 10, "executive_summary": "Summary", "created_at": "2026-06-29T12:00:00"}
+    ]
+    mock_db.execute.return_value = mock_result
+    app.dependency_overrides[get_db] = lambda: mock_db
+    
+    response = client.get("/api/v1/reports")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == 123
+    
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_download_report():
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.mappings.return_value.one_or_none.return_value = {
+        "start_date": date(2026, 6, 22),
+        "end_date": date(2026, 6, 29),
+        "pdf_content": b"%PDF mock content"
+    }
+    mock_db.execute.return_value = mock_result
+    app.dependency_overrides[get_db] = lambda: mock_db
+    
+    response = client.get("/api/v1/reports/123/download")
+    assert response.status_code == 200
+    assert response.content == b"%PDF mock content"
+    assert "attachment; filename=honeystack_report_20260622_20260629.pdf" in response.headers["Content-Disposition"]
+    
     app.dependency_overrides.clear()

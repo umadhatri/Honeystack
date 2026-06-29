@@ -5,10 +5,10 @@ Receives events from sensors, persists to PostgreSQL, and exposes data to the da
 import os
 import logging
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional, List
 
-from fastapi import FastAPI, Request, HTTPException, Depends
+from fastapi import FastAPI, Request, HTTPException, Depends, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -19,6 +19,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select, func, text
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+from reports import compile_report_data, generate_summary, build_pdf_report
 
 load_dotenv()
 
@@ -336,3 +337,101 @@ async def sensor_health(db: AsyncSession = Depends(get_db)):
         GROUP BY sensor_type
     """))
     return [dict(r) for r in result.mappings().all()]
+
+
+class ReportGenerateIn(BaseModel):
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+
+
+@app.post("/api/v1/reports/generate", tags=["Reports"], status_code=201)
+async def generate_report_endpoint(
+    payload: Optional[ReportGenerateIn] = None,
+    db: AsyncSession = Depends(get_db)
+):
+    """Compile and generate PDF report for a given date range."""
+    from datetime import timedelta
+    e_date = (payload.end_date if payload and payload.end_date else date.today())
+    s_date = (payload.start_date if payload and payload.start_date else e_date - timedelta(days=7))
+
+    # Compile data
+    try:
+        report_data = await compile_report_data(db, s_date, e_date)
+        summary = await generate_summary(report_data)
+        pdf_bytes = build_pdf_report(report_data, summary)
+    except Exception as e:
+        logger.error(f"Report generation compilation failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Report generation failed: {e}")
+
+    # Save to PostgreSQL
+    import json as _json
+    stmt = text("""
+        INSERT INTO reports (
+            start_date, end_date, total_events, unique_ips,
+            top_credentials, top_countries, detected_campaigns, mitre_techniques,
+            executive_summary, pdf_content, created_at
+        ) VALUES (
+            :start_date, :end_date, :total_events, :unique_ips,
+            :top_credentials::jsonb, :top_countries::jsonb, :detected_campaigns::jsonb, :mitre_techniques::jsonb,
+            :executive_summary, :pdf_content, :created_at
+        )
+        RETURNING id
+    """)
+
+    bound = {
+        "start_date": s_date,
+        "end_date": e_date,
+        "total_events": report_data["total_events"],
+        "unique_ips": report_data["unique_ips"],
+        "top_credentials": _json.dumps(report_data["top_credentials"]),
+        "top_countries": _json.dumps(report_data["top_countries"]),
+        "detected_campaigns": _json.dumps(report_data["detected_campaigns"]),
+        "mitre_techniques": _json.dumps(report_data["mitre_techniques"]),
+        "executive_summary": summary,
+        "pdf_content": pdf_bytes,
+        "created_at": datetime.utcnow()
+    }
+
+    res = await db.execute(stmt, bound)
+    await db.commit()
+    report_id = res.scalar_one()
+
+    return {"status": "created", "report_id": report_id, "start_date": s_date, "end_date": e_date}
+
+
+@app.get("/api/v1/reports", tags=["Reports"])
+async def list_reports(limit: int = 20, db: AsyncSession = Depends(get_db)):
+    """List all generated reports without the large binary PDF blob."""
+    result = await db.execute(text("""
+        SELECT id, start_date, end_date, total_events, unique_ips, executive_summary, created_at
+        FROM reports
+        ORDER BY created_at DESC
+        LIMIT :limit
+    """), {"limit": limit})
+    return [dict(r) for r in result.mappings().all()]
+
+
+@app.get("/api/v1/reports/{id}/download", tags=["Reports"])
+async def download_report(id: int, db: AsyncSession = Depends(get_db)):
+    """Download a report PDF binary."""
+    result = await db.execute(text("""
+        SELECT start_date, end_date, pdf_content
+        FROM reports
+        WHERE id = :id
+    """), {"id": id})
+    row = result.mappings().one_or_none()
+    
+    if not row:
+        raise HTTPException(status_code=404, detail="Report not found")
+        
+    start_str = row["start_date"].strftime("%Y%m%d")
+    end_str = row["end_date"].strftime("%Y%m%d")
+    filename = f"honeystack_report_{start_str}_{end_str}.pdf"
+    
+    return Response(
+        content=row["pdf_content"],
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
