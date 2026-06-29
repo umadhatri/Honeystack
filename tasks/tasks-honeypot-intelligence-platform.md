@@ -54,14 +54,14 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 3.5 Implement campaign detection logic (3+ IPs sharing credential list/UA/commands within 1 hour)
   - [x] 3.6 Implement MITRE ATT&CK technique mapping using a static JSON configuration (`worker/mitre_mapping.json`)
   - [x] 3.7 Ensure DB worker query safety using `FOR UPDATE SKIP LOCKED`
-- [ ] 4.0 Build the SOC Dashboard Frontend
-  - [ ] 4.1 Scaffold a React Single Page Application (SPA) with a dark theme and configure it for SOC monitors
-  - [ ] 4.2 Set up state management and routing (using React/Vite/Next.js as requested or needed)
-  - [ ] 4.3 Implement real-time feed updates using WebSockets/SSE or 30-second auto-refresh
-  - [ ] 4.4 Build the Live Attack Feed, World Map (using Leaflet), and Attack Volume Timeline (using Recharts)
-  - [ ] 4.5 Build Top Credentials, Top Attacking IPs, MITRE ATT&CK Heatmap, Campaign Tracker, and Sensor Health panels
-  - [ ] 4.6 Implement global filtering (time range, sensor type, country)
-  - [ ] 4.7 Implement the IP detail drawer showing full enrichment, events, timeline, and observed MITRE techniques
+- [x] 4.0 Build the SOC Dashboard Frontend
+  - [x] 4.1 Scaffold a React Single Page Application (SPA) with a dark theme and configure it for SOC monitors
+  - [x] 4.2 Set up state management and routing (using React/Vite/Next.js as requested or needed)
+  - [x] 4.3 Implement real-time feed updates using WebSockets/SSE or 30-second auto-refresh
+  - [x] 4.4 Build the Live Attack Feed, World Map (using Leaflet), and Attack Volume Timeline (using Recharts)
+  - [x] 4.5 Build Top Credentials, Top Attacking IPs, MITRE ATT&CK Heatmap, Campaign Tracker, and Sensor Health panels
+  - [x] 4.6 Implement global filtering (time range, sensor type, country)
+  - [x] 4.7 Implement the IP detail drawer showing full enrichment, events, timeline, and observed MITRE techniques
 - [ ] 5.0 Implement Reporting & Automated Scheduler
   - [ ] 5.1 Create `scheduler/main.py` to trigger weekly report generation every Monday at 00:00 UTC
   - [ ] 5.2 Implement report compilation (event counts, IPs, campaigns, etc. and week-over-week comparisons)

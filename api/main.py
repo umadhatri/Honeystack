@@ -313,3 +313,26 @@ async def ip_detail(ip: str, db: AsyncSession = Depends(get_db)):
         "events": events,
         "mitre_techniques": mitre_tags,
     }
+
+
+@app.get("/api/v1/campaigns", tags=["Dashboard"])
+async def list_campaigns(limit: int = 20, db: AsyncSession = Depends(get_db)):
+    """Return top active campaigns."""
+    result = await db.execute(text("""
+        SELECT id, name, shared_credentials, shared_user_agent, shared_commands, start_time, last_active, ip_count
+        FROM campaigns
+        ORDER BY last_active DESC
+        LIMIT :limit
+    """), {"limit": limit})
+    return [dict(r) for r in result.mappings().all()]
+
+
+@app.get("/api/v1/sensors", tags=["Dashboard"])
+async def sensor_health(db: AsyncSession = Depends(get_db)):
+    """Dynamic sensor health check based on last event timestamp."""
+    result = await db.execute(text("""
+        SELECT sensor_type, MAX(timestamp) as last_seen, COUNT(*) as event_count
+        FROM events
+        GROUP BY sensor_type
+    """))
+    return [dict(r) for r in result.mappings().all()]

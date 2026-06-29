@@ -165,3 +165,41 @@ async def test_ip_detail():
     assert data["mitre_techniques"][0]["technique_id"] == "T1190"
 
     app.dependency_overrides.clear()
+
+@pytest.mark.asyncio
+async def test_campaigns():
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.mappings.return_value.all.return_value = [
+        {"id": 1, "name": "Campaign-SSH-1", "ip_count": 3}
+    ]
+    mock_db.execute.return_value = mock_result
+    app.dependency_overrides[get_db] = lambda: mock_db
+
+    response = client.get("/api/v1/campaigns")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["name"] == "Campaign-SSH-1"
+
+    app.dependency_overrides.clear()
+
+@pytest.mark.asyncio
+async def test_sensors():
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.mappings.return_value.all.return_value = [
+        {"sensor_type": "SSH", "event_count": 55}
+    ]
+    mock_db.execute.return_value = mock_result
+    app.dependency_overrides[get_db] = lambda: mock_db
+
+    response = client.get("/api/v1/sensors")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["sensor_type"] == "SSH"
+
+    app.dependency_overrides.clear()
+
+    app.dependency_overrides.clear()
