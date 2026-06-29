@@ -68,8 +68,8 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.3 Implement LLM-assisted summary generation if OpenAI/Anthropic keys are configured, fallback to Jinja2 templates if not
   - [x] 5.4 Export reports to PDF format and store them in PostgreSQL (accessible/downloadable from dashboard)
   - [x] 5.5 Add manual report trigger button on the dashboard
-- [ ] 6.0 Configure Cloud Infrastructure and Hardening
-  - [ ] 6.1 Set up Terraform config for Azure (VM, networking, NSGs, DNS)
-  - [ ] 6.2 Apply security hardening: isolate sensor containers from internal DB networks, drop capabilities for the SSH sensor
-  - [ ] 6.3 Finalize README with architecture diagram, screenshots, setup instructions, and portfolio success metrics
-  - [ ] 6.4 Write sample data exporter to include anonymized real attack data in the repository
+- [x] 6.0 Configure Cloud Infrastructure and Hardening
+  - [x] 6.1 Set up Terraform config for Azure (VM, networking, NSGs, DNS)
+  - [x] 6.2 Apply security hardening: isolate sensor containers from internal DB networks, drop capabilities for the SSH sensor
+  - [x] 6.3 Finalize README with architecture diagram, screenshots, setup instructions, and portfolio success metrics
+  - [x] 6.4 Write sample data exporter to include anonymized real attack data in the repository
