@@ -102,9 +102,7 @@ function App() {
   const markersGroupRef = useRef(null);
 
   // API Backend URL (resolves to same host, port 8000 via internal docker proxies or direct localhost)
-  const API_BASE = window.location.port === '3000' 
-    ? 'http://localhost:8000' 
-    : `${window.location.protocol}//${window.location.hostname}:8000`;
+  const API_BASE = `${window.location.protocol}//${window.location.hostname}:8000`;
 
   // Fetch Dashboard Stats & Feeds
   const fetchData = async () => {
