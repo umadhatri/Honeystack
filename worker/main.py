@@ -145,9 +145,9 @@ async def get_ip_enrichment(ip: str, redis_client: aioredis.Redis) -> Dict[str, 
 async def save_ip_profile(profile: Dict[str, Any], db: AsyncSession):
     stmt = text("""
         INSERT INTO ip_profiles (
-            ip, abuse_score, report_count, country, country_code, city, isp, asn, org, last_enriched
+            ip, abuse_score, report_count, country, country_code, city, isp, asn, org, lat, lon, last_enriched
         ) VALUES (
-            :ip, :abuse_score, :report_count, :country, :country_code, :city, :isp, :asn, :org, :last_enriched
+            :ip, :abuse_score, :report_count, :country, :country_code, :city, :isp, :asn, :org, :lat, :lon, :last_enriched
         )
         ON CONFLICT (ip) DO UPDATE SET
             abuse_score = EXCLUDED.abuse_score,
@@ -158,6 +158,8 @@ async def save_ip_profile(profile: Dict[str, Any], db: AsyncSession):
             isp = EXCLUDED.isp,
             asn = EXCLUDED.asn,
             org = EXCLUDED.org,
+            lat = EXCLUDED.lat,
+            lon = EXCLUDED.lon,
             last_enriched = EXCLUDED.last_enriched
     """)
     bound = {**profile, "last_enriched": datetime.utcnow()}
