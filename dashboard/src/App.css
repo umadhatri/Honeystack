@@ -96,7 +96,7 @@
 /* Card base */
 .soc-card {
   background-color: var(--bg-card);
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1.25rem;
