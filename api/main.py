@@ -173,8 +173,8 @@ async def ingest_event(
             http_body, http_user_agent, attack_type
         ) VALUES (
             :timestamp, :sensor_type, :source_ip, :source_port,
-            :ssh_username, :ssh_password, :ssh_client_version, :ssh_commands::jsonb,
-            :http_method, :http_path, :http_query, :http_headers::jsonb,
+            :ssh_username, :ssh_password, :ssh_client_version, CAST(:ssh_commands AS jsonb),
+            :http_method, :http_path, :http_query, CAST(:http_headers AS jsonb),
             :http_body, :http_user_agent, :attack_type
         )
         RETURNING id
