@@ -81,6 +81,8 @@ async def get_ip_enrichment(ip: str, redis_client: aioredis.Redis) -> Dict[str, 
         "isp": None,
         "asn": None,
         "org": None,
+        "lat": None,
+        "lon": None,
     }
 
     # 1. AbuseIPDB Lookup
@@ -120,6 +122,8 @@ async def get_ip_enrichment(ip: str, redis_client: aioredis.Redis) -> Dict[str, 
                     profile["isp"] = data.get("isp")
                     profile["asn"] = data.get("as")
                     profile["org"] = data.get("org")
+                    profile["lat"] = data.get("lat")
+                    profile["lon"] = data.get("lon")
                 else:
                     logger.warning(f"ip-api returned fail for {ip}: {data.get('message')}")
             else:
