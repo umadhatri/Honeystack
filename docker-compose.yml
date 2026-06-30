@@ -43,11 +43,13 @@ services:
       - REDIS_URL=${REDIS_URL}
       - CAMPAIGN_THRESHOLD=${CAMPAIGN_THRESHOLD}
       - CAMPAIGN_WINDOW_HOURS=${CAMPAIGN_WINDOW_HOURS}
+    ports:
+      - "8000:8000"
     networks:
       - ingest-net
       - backend-net
       - frontend-net
-    command: sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     depends_on:
       db:
         condition: service_healthy
