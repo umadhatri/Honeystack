@@ -355,7 +355,7 @@ async def get_or_create_campaign(
 # ──────────────────────────────────────────────────────────────
 async def process_event(event_row: Any, db: AsyncSession, redis_client: aioredis.Redis):
     # Convert row to dictionary
-    event = dict(event_row)
+    event = dict(event_row._mapping)
     logger.info(f"Processing event #{event['id']} from {event['source_ip']}")
 
     # 1. IP Enrichment & Profile Update
