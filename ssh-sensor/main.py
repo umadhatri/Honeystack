@@ -163,31 +163,33 @@ class HoneypotSSHServer(asyncssh.SSHServer):
         return True
 
     def validate_password(self, username: str, password: str) -> bool:
-        self._password = password
-        peer = self._peername
-        ip, port = peer[0], peer[1]
+        try:
+            self._password = password
+            peer = self._peername
+            ip, port = peer[0], peer[1]
 
-        # Always accept the fake-login percentage of attempts
-        fake_login = random.random() < LOGIN_PERCENTAGE
+            fake_login = random.random() < LOGIN_PERCENTAGE
 
-        logger.info(
-            f"[AUTH] {ip}:{port} user={username!r} pass={password!r} "
-            f"fake_login={fake_login}"
-        )
+            logger.info(
+                f"[AUTH] {ip}:{port} user={username!r} pass={password!r} "
+                f"fake_login={fake_login}"
+            )
 
-        # Fire-and-forget credential event (commands added later on shell exit)
-        asyncio.ensure_future(
-            submit_event({
-                "sensor_type": "SSH",
-                "source_ip": ip,
-                "source_port": port,
-                "ssh_username": username,
-                "ssh_password": password,
-                "ssh_client_version": self._client_version,
-            })
-        )
+            asyncio.ensure_future(
+                submit_event({
+                    "sensor_type": "SSH",
+                    "source_ip": ip,
+                    "source_port": port,
+                    "ssh_username": username,
+                    "ssh_password": password,
+                    "ssh_client_version": self._client_version,
+                })
+            )
 
-        return fake_login
+            return fake_login
+        except Exception:
+            logger.exception("validate_password crashed")
+            return False
 
 
 async def handle_client(process: asyncssh.SSHServerProcess):
