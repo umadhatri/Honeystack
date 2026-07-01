@@ -164,7 +164,8 @@ class HoneypotSSHServer(asyncssh.SSHServer):
 
     def validate_password(self, username: str, password: str) -> bool:
         self._password = password
-        ip, port = self._peername
+        peer = self._peername
+        ip, port = peer[0], peer[1]
 
         # Always accept the fake-login percentage of attempts
         fake_login = random.random() < LOGIN_PERCENTAGE
