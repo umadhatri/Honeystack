@@ -159,7 +159,7 @@ class HoneypotSSHServer(asyncssh.SSHServer):
         self._username = username
         return True  # require auth
 
-    def password_auth_requested(self) -> bool:
+    def password_auth_supported(self) -> bool:
         return True
 
     def validate_password(self, username: str, password: str) -> bool:
