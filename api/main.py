@@ -372,7 +372,7 @@ async def generate_report_endpoint(
             executive_summary, pdf_content, created_at
         ) VALUES (
             :start_date, :end_date, :total_events, :unique_ips,
-            :CAST(:top_credentials AS jsonb), :CAST(:top_countries AS jsonb), :CAST(:detected_campaigns AS jsonb), :CAST(:mitre_techniques AS jsonb),
+            CAST(:top_credentials AS jsonb), CAST(:top_countries AS jsonb), CAST(:detected_campaigns AS jsonb), CAST(:mitre_techniques AS jsonb),
             :executive_summary, :pdf_content, :created_at
         )
         RETURNING id
