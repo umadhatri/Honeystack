@@ -366,7 +366,11 @@ async def process_event(event_row: Any, db: AsyncSession, redis_client: aioredis
 
     # 1. IP Enrichment & Profile Update
     ip_profile = await get_ip_enrichment(event["source_ip"], redis_client)
-    await save_ip_profile(ip_profile, db)
+    try:
+        await save_ip_profile(ip_profile, db)
+    except Exception as e:
+        logger.error(f"Error saving IP profile for {event['source_ip']}: {e}")
+        await db.rollback()
 
     # 2. SSH Credential Classification
     credential_class = "custom"
