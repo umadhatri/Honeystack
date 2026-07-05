@@ -367,10 +367,13 @@ async def process_event(event_row: Any, db: AsyncSession, redis_client: aioredis
     # 1. IP Enrichment & Profile Update
     ip_profile = await get_ip_enrichment(event["source_ip"], redis_client)
     try:
-        await save_ip_profile(ip_profile, db)
+        # Nested transaction (SAVEPOINT): if this insert fails, only this
+        # savepoint rolls back — the outer batch transaction (and any
+        # already-pending work from earlier events in this batch) is untouched.
+        async with db.begin_nested():
+            await save_ip_profile(ip_profile, db)
     except Exception as e:
         logger.error(f"Error saving IP profile for {event['source_ip']}: {e}")
-        await db.rollback()
 
     # 2. SSH Credential Classification
     credential_class = "custom"
