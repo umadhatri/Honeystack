@@ -228,7 +228,7 @@ async def list_events(
 
 @app.get("/api/v1/stats", tags=["Dashboard"])
 async def stats(db: AsyncSession = Depends(get_db)):
-    """High-level counts for the dashboard header."""
+    """High-level counts for the dashboard header, including MITRE techniques."""
     result = await db.execute(text("""
         SELECT
             COUNT(*)                                          AS total_events,
@@ -239,7 +239,24 @@ async def stats(db: AsyncSession = Depends(get_db)):
         FROM events
     """))
     row = result.mappings().one()
-    return dict(row)
+    stats_data = dict(row)
+    
+    # Fetch MITRE technique counts
+    mitre_result = await db.execute(text("""
+        SELECT technique_id, technique_name, COUNT(*) AS count
+        FROM mitre_tags
+        GROUP BY technique_id, technique_name
+        ORDER BY count DESC
+    """))
+    mitre_counts = {}
+    for r in mitre_result.mappings().all():
+        mitre_counts[r['technique_id']] = {
+            'name': r['technique_name'],
+            'count': r['count']
+        }
+    
+    stats_data['mitre_techniques'] = mitre_counts
+    return stats_data
 
 
 @app.get("/api/v1/top-credentials", tags=["Dashboard"])

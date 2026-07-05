@@ -58,6 +58,7 @@ function App() {
     unique_ips: 0,
     ssh_events: 0,
     http_events: 0,
+    mitre_techniques: {},
   });
   const [events, setEvents] = useState([]);
   const [topIps, setTopIps] = useState([]);
@@ -293,27 +294,21 @@ function App() {
 
   // Compile MITRE Technique counts from current active events
   const getMitreTechCounts = () => {
-    // Map current attack types/event types to MITRE Techniques for visualization
-    const counts = {
-      'T1110.001': 0, 'T1110.004': 0, 'T1552.001': 0, 'T1059': 0,
-      'T1496': 0, 'T1595.002': 0, 'T1213': 0, 'T1078': 0
-    };
-
-    events.forEach(e => {
-      if (e.sensor_type === 'SSH') {
-        counts['T1110.001']++;
-        if (e.ssh_commands && e.ssh_commands.length > 0) counts['T1059']++;
-        // Check for minerd/resource hijack
-        const cmdText = JSON.stringify(e.ssh_commands || []).toLowerCase();
-        if (cmdText.includes('miner') || cmdText.includes('xmrig')) counts['T1496']++;
-      } else if (e.sensor_type === 'HTTP') {
-        const path = (e.http_path || '').toLowerCase();
-        if (path.includes('.env') || path.includes('config.php')) counts['T1552.001']++;
-        if (path.includes('.git')) counts['T1213']++;
-        if (path.includes('admin') || path.includes('login') || path.includes('phpmyadmin')) counts['T1078']++;
-        if (e.attack_type && e.attack_type.toLowerCase() === 'scan') counts['T1595.002']++;
-      }
+    // Use real MITRE technique counts from the API
+    // stats.mitre_techniques is keyed by technique_id, with { name, count } values
+    const counts = {};
+    
+    // Initialize all known techniques with 0
+    MITRE_TECHNIQUES.forEach(t => {
+      counts[t.id] = 0;
     });
+    
+    // Override with real counts from API
+    if (stats.mitre_techniques && typeof stats.mitre_techniques === 'object') {
+      Object.entries(stats.mitre_techniques).forEach(([techId, data]) => {
+        counts[techId] = data.count || 0;
+      });
+    }
 
     return counts;
   };
